@@ -1,17 +1,18 @@
 package services
 
 import (
+	"github.com/galileoluna/bookstore_users-api/utils/date_utils"
 	"github.com/galileoluna/bookstore_users-api/utils/errors"
 
 	"github.com/galileoluna/bookstore_users-api/domain/users"
 )
 
 func GetUser(userID int64) (*users.User, *errors.RestErr) {
-	result := &users.User{Id: userID}
-	if err := result.Get(); err != nil {
+	dao := &users.User{Id: userID}
+	if err := dao.Get(); err != nil {
 		return nil, err
 	}
-	return result, nil
+	return dao, nil
 }
 
 func CreateUser(user users.User) (*users.User, *errors.RestErr) {
@@ -19,6 +20,8 @@ func CreateUser(user users.User) (*users.User, *errors.RestErr) {
 	if err := user.Validate(); err != nil {
 		return nil, err
 	}
+	user.Status = user.GetStatus()
+	user.DateCreated = date_utils.GetNowDBFormat()
 	if err := user.Save(); err != nil {
 		return nil, err
 	}
@@ -56,6 +59,11 @@ func UpdateUser(isPartial bool, user users.User) (*users.User, *errors.RestErr) 
 	return current, nil
 }
 func DeleteUser(userId int64) *errors.RestErr {
-	user := &users.User{Id: userId}
-	return user.Delete()
+	dao := &users.User{Id: userId}
+	return dao.Delete()
+}
+
+func Search(status string) ([]users.User, *errors.RestErr) {
+	dao := &users.User{}
+	return dao.FindByStatus(status)
 }

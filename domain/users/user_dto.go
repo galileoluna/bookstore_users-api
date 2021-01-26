@@ -6,6 +6,10 @@ import (
 	"github.com/galileoluna/bookstore_users-api/utils/errors"
 )
 
+const (
+	StatusActive = "active"
+)
+
 type User struct {
 	Id          int64  `json:"id"`
 	FirstName   string `json:"first_name"`
@@ -15,20 +19,6 @@ type User struct {
 	Status      string `json:"status"`
 	Password    string `json:"password"`
 }
-
-// function
-
-/*
-func Validate(user *User) *errors.RestErr {
-
-	user.Email = strings.TrimSpace(strings.ToLower(user.Email))
-
-	if user.Email == "" {
-		return errors.NewBadRequestError("invalid email address")
-	}
-	return nil
-}
-*/
 
 //method
 func (user *User) Validate() *errors.RestErr {
@@ -46,4 +36,8 @@ func (user *User) Validate() *errors.RestErr {
 		return errors.NewBadRequestError("invalid password")
 	}
 	return nil
+}
+
+func (user *User) GetStatus() string {
+	return StatusActive
 }

@@ -91,3 +91,30 @@ func Delete(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, map[string]string{"status": "deleted"})
 }
+func Search(c *gin.Context) {
+	status := c.Query("status")
+
+	users, err := services.Search(status)
+	if err != nil {
+		c.JSON(err.Status, err)
+		return
+	}
+	c.JSON(http.StatusOK, users)
+}
+
+/*
+func Login(c *gin.Context) {
+	var request users.LoginRequest
+	if err := c.ShouldBindJSON(&request); err != nil {
+		restErr := rest_errors.NewBadRequestError("invalid json body")
+		c.JSON(restErr.Status(), restErr)
+		return
+	}
+	user, err := services.UsersService.LoginUser(request)
+	if err != nil {
+		c.JSON(err.Status(), err)
+		return
+	}
+	c.JSON(http.StatusOK, user.Marshall(c.GetHeader("X-Public") == "true"))
+
+}*/
